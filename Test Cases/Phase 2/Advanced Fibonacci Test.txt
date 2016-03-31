@@ -1,0 +1,43 @@
+//# test program for stage 2: Fibonacci Number Calculation
+//# ----- INSTRUCTION 0-15: INITIALIZE ----- #
+0000  B80B    //	LLB	R8, 11	    # 6cycle counter
+0001  A800    //	LHB	R8, 0  		# R8 = 11 is the input index
+0002  B901    //	LLB	R9, 1  		# R9 = 1
+0003  BA10    //	LLB	R10, 0x10 	# R10 = 0x10 is the memory location
+0004  1880    //	SUB	R8, R8, R0 	# CHECK IF R8 == 0 
+0005  C008    //	B	000, L0 	# EARLY EXIT
+0006  1189    //	SUB	R1, R8, R9 	# CHECK IF R8 == 1,6cycle
+0007  C006    //	B	000, L0 	# EARLY EXIT
+0008  1889    //	SUB	R8, R8, R9	# R8 = R8 - 1
+0009  B400    //	LLB	R4, 0		# R4 IS THE DESIRED FIBONACCI NUMBER
+000a  B200    //	LLB	R2, 0		# R2 IS THE ZEROTH NUMBER
+000b  B301    //	LLB	R3, 1 		# R3 IS THE FIRST NUMBER
+//000c  94A0    //	SW	R4, R10, 0 	# [0x10] = 0
+000c  0D00
+000d  C702    //	B	111, L1     # 5cycle
+//000e  98A0    //L0:	SW 	R8, R10, 0 	# [0x10] = R8
+000e  0D80
+000f  C709    //	B 	111, L3 	# L3 IS FINISH
+//# ----- INSTRUCTION 16-19: LOOPING COMPUTATION ------ #
+0010  D00B    //L1:	JAL	L2 		# JUMP TO SUBROUTINE L2,PC stalls 2 cycle. other inst doesnot stall. 
+0011  1889    //	SUB	R8, R8, R9 	# R8=R8-1
+0012  C1FD    //	B	001, L1		# IF R8!=0, CONTINUE
+0013  7000    //	RL	R0, R0, 0 	# NOP
+//# ----- INSTRUCTION 20-27: FINISH ------ #
+//0014  8EA0    //	LW	R14, R10, 0	# should GIVE R14 = 89
+0014  0ED0
+0015  BB1C    //	LLB	R11, 28
+0016  BC10    //	LLB	R12, 16
+0017  FB00    //	EXEC	R11		# should GIVE R4 = 144
+0018  FC00    //	EXEC	R12		# should do nothing
+0019  C7FF    //L3:	B	111, L3 	# jump to self: infinite loop
+001a  7000    //	RL	R0, R0, 0 	# NOP
+001b  7000    //	RL	R0, R0, 0 	# NOP	
+//# ----- INSTRUCTION 28-32 : SUBROUTINE ----- #
+001c  0423    //L2:	ADD	R4, R2, R3 	# R4 = R2+R3
+//001d  94A0    //	SW	R4, R10, 0
+001d  0D40
+001e  0203    //	ADD	R2, R0, R3	# NEXT R2 = CURRENT R3
+//001f  83A0    //	LW	R3, R10, 0 	# NEXT R3 = CURRENT R4
+001f  03D0
+0020  EF00    //	JR	R15 		# RETURN

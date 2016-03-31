@@ -1,0 +1,38 @@
+//Examine all the instructions, 
+//Show ability of running all instructions
+//Show hazard detection
+//Show data forwarding
+//# Sample program a:
+//* denotes for data dependency
+0000  8101    //		LW 	R1, R0, 1 # R1 = 1
+0001  8202    //		LW 	R2, R0, 2 # R2 = 2
+0002  8303    //		LW 	R3, R0, 3 # R3 = 3
+0003  8802    //		LW 	R8, R0, 2 # R8 = 2. R8 is used as loop count
+0004  0412    //		ADD	R4, R1, R2 # R4 = 3
+0005  1501    //		SUB 	R5, R0, R1 # R5 = FFFF
+0006  2653    //   	   *AND 	R6, R5, R3  # R6 = 3
+0007  4552    //		SLL 	R5, R5, 2 # R5 = FFFC
+0008  8A00    //L1:		LW 	R10, R0, 0 # R10 = [0]
+0009  0AA2    //   	   *ADD 	R10, R10, R2 # R10 += 2;
+000a  9A00    //   	   *SW 	R10, R0, 0 #[0] += 2
+000b  1881    //		SUB	R8, R8, R1 # R8--
+000c  C1FB    //		B	001, L1 #branch if not equal
+000d  8A00    //		LW	R10, R0, 0 # R10 = 4
+000e  0AA3    //   	   *ADD	R10, R10, R3 # R10 = 7
+000f  FA00    //		EXEC	R10	# R5 = FFF0
+0010  9505    //   	   *SW	R5, R0, 5
+
+//Final Output
+//R1 = 1
+//R2 = 2
+//R3 = 3
+//R4 = 3
+//R5 = FFFF -> FFFC -> FFF0
+//R6 = 3
+//R7 = 0
+//R8 = 2 -> 1 -> 0
+//R9 = 0
+//R10 = 0 -> 2 -> 2 -> 4 -> 4 -> 7
+
+//MEM[0] = 2 -> 4
+//MEM[5] = FFF0
